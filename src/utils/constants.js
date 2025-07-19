@@ -1,6 +1,6 @@
 // src/utils/constants.js
 export const OPENVIDU_CONFIG = {
-  SERVER_URL: "https://54.180.252.148:4443",
+  SERVER_URL: "https://13.124.80.162",
   SERVER_SECRET: "MY_SECRET",
   APPLICATION_NAME: 'OPENVIDUAPP'
 };

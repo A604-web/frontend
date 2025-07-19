@@ -38,13 +38,36 @@ class OpenViduService {
         this.getRequestOptions('POST', { customSessionId: sessionId })
       );
 
-      if (!response.ok && response.status !== 409) {
-        throw new Error(`Session creation failed: ${response.status}`);
+      // 성공적으로 새 세션 생성
+      if (response.ok) {
+        const session = await response.json();
+        console.log('New session created:', session);
+        return session;
       }
+      
+      // 이미 존재하는 세션 (409)
+      if (response.status === 409) {
+        console.log('Session already exists, fetching existing session info');
+        
+        // 기존 세션 정보 조회
+        const existingResponse = await fetch(
+          `${this.baseURL}/openvidu/api/sessions/${sessionId}`,
+          this.getRequestOptions('GET')
+        );
+        
+        if (existingResponse.ok) {
+          const existingSession = await existingResponse.json();
+          console.log('Existing session found:', existingSession);
+          return existingSession;
+        } else {
+          // 세션 정보 조회 실패 시 최소한의 정보만 반환
+          return { id: sessionId };
+        }
+      }
+      
+      // 기타 에러
+      throw new Error(`Session creation failed: ${response.status}`);
 
-      const session = await response.json();
-      console.log('Session created:', session);
-      return session;
     } catch (error) {
       // 409는 이미 존재하는 세션이므로 정상
       if (error.message.includes('409')) {
