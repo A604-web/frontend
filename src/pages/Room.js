@@ -16,7 +16,8 @@ const Room = ({ sessionId, userName, onLeaveRoom }) => {
     leaveSession,
     toggleAudio,
     toggleVideo,
-    clearError
+    clearError,
+    session // ← 세션 객체 추가 (useOpenVidu에서 노출해야 함)
   } = useOpenVidu();
 
   useEffect(() => {
@@ -36,7 +37,6 @@ const Room = ({ sessionId, userName, onLeaveRoom }) => {
       const timer = setTimeout(() => {
         handleLeaveSession();
       }, 5000);
-      
       return () => clearTimeout(timer);
     }
   }, [error, isLoading]);
@@ -100,6 +100,8 @@ const Room = ({ sessionId, userName, onLeaveRoom }) => {
       onToggleVideo={toggleVideo}
       onLeaveSession={handleLeaveSession}
       isLoading={isLoading}
+      session={session}        // ← 세션 객체 전달
+      currentUser={userName}   // ← 현재 사용자 이름 전달
     />
   );
 };
